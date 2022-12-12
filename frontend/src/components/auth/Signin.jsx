@@ -1,0 +1,69 @@
+import React, {useEffect, useState} from 'react';
+import Title from "../form/Title";
+import FormInput from "../form/FormInput";
+import Submit from "../form/Submit";
+import CustomLink from "../CustomLink";
+import {useAuth, useNotification} from "../../hooks";
+import {useNavigate} from "react-router-dom";
+import {isValidEmail} from "../../utils/helper";
+
+const validateUserInfo = ({ email, password}) => {
+    if (!email.trim()) return {ok: false, error: 'Email is missing'}
+    if (!isValidEmail(email)) return {ok: false, error: 'Invalid email'}
+
+    if (!password.trim()) return {ok: false, error: 'Password is missing!!'}
+    if (password.length < 8) return {ok: false, error: 'Password must be 8 characters long !'}
+
+    return {ok: true}
+
+}
+
+export default function Signin() {
+    const [userInfo, setUserInfo] = useState({
+        email: '',
+        password: ''
+    });
+    const navigate = useNavigate();
+
+    const {updateNotification} = useNotification();
+    const { handleLogin, authInfo} = useAuth();
+    const {isPending, isLoggedIn} = authInfo;
+
+    const handleChange = ({target}) => {
+        const {value, name} = target;
+        setUserInfo({...userInfo, [name]: value})
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const {ok, error} = validateUserInfo(userInfo);
+
+        if (!ok) return updateNotification('error', error);
+        handleLogin(userInfo.email, userInfo.password);
+    };
+
+    // useEffect(() => {
+    //     if(isLoggedIn){
+    //        navigate('/');
+    //     }
+    // },[isLoggedIn])
+
+    return (
+        <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
+            <div className="w-full p-6 m-auto bg-amber-100 rounded-md shadow-md shadow-orange-500 lg:max-w-xl">
+                <form className="mt-6 space-y-6 " onSubmit={handleSubmit}>
+                    <Title> Sign in </Title>
+                    <FormInput value={userInfo.email} label='Email' name='email' onChange={handleChange}/>
+                    <FormInput value={userInfo.password} label='Password' name='password' onChange={handleChange} type="password"/>
+                    <Submit value="Sign In" busy={isPending}/>
+                    <CustomLink to="/auth/forget-password"> Forget Password </CustomLink>
+                </form>
+                <p className="mt-8 text-xs font-light text-center text-gray-700">
+                    {" "}
+                    Don't have an account?{" "}
+                <CustomLink to="/auth/signup"> Sign Up </CustomLink>
+                </p>
+            </div>
+        </div>
+    );
+}

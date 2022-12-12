@@ -1,0 +1,27 @@
+const genres = [
+    "Action",
+    "Adventure",
+    "Animation",
+    "Anime",
+    "Comedy",
+    "Crime",
+    "Documentary",
+    "Drama",
+    "Fiction",
+    "Game Show",
+    "History",
+    "Horror",
+    "Music",
+    "Musical",
+    "Mystery",
+    "Romance",
+    "Sci-Fi",
+    "Superhero",
+    "Sport",
+    "Talk Show",
+    "Thriller",
+    "War",
+    "Western",
+];
+
+export default genres;
